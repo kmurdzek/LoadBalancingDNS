@@ -1,0 +1,24 @@
+#read in the tables
+import socket
+dns = {}
+with open("PROJ2-DNSTS1.txt", "r") as f:
+    for line in f:
+        delimed = line.split()
+        dns[delimed[0]] = (delimed[1], delimed[2])
+print(dns)
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+print("[S]: Sever socket created")
+#server.setblocking(0)
+server_binding = ("", 50071)
+server.bind(server_binding)
+server.listen(10)
+csockid, addr = server.accept()
+
+data_from_rs = csockid.recv(10)
+#checks the table for the domain
+ip = dns[data_from_rs.decode('utf-8')]
+if(ip != 0):
+    ip = ip[0] + " " + ip[1]
+csockid.send(ip.encode('utf-8'))
+
+server.close()
