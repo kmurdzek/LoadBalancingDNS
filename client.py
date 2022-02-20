@@ -9,9 +9,9 @@ def client(group_idx, idx):
     # connect to the server on local machine
     server_binding = (localhost_addr, port)
     cs.connect(server_binding)
-    msg = "GOOGLE.com"
+    msg = "amazon.com"
     cs.send(msg.encode("utf-8"))
-    data = cs.recv(100)
+    data = cs.recv(200)
     print("Returned data: ", data.decode('utf-8'))
     print( "[C]: Group-{group_idx} Clien-{idx} received from server: {data.decode('utf-8')}")
     cs.close()
@@ -23,7 +23,7 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
     thread_list = []
-    for i in range(1):
+    for i in range(5):
         t = threading.Thread(
             name= "client-{i}", target=client, args=(args.group_idx, i)
         )

@@ -21,8 +21,4 @@ if(dns.has_key(data_from_rs.decode('utf-8'))):
     ip = ip[0] + " " + ip[1]
     csockid.send(ip.encode('utf-8'))
     print(ip)
-else:
-    #ip = "0.0.0.0"
-    #csockid.send(ip.encode('utf-8'))
-    pass
 server.close()
