@@ -13,12 +13,16 @@ server_binding = ("", 50071)
 server.bind(server_binding)
 server.listen(10)
 csockid, addr = server.accept()
-
-data_from_rs = csockid.recv(10)
+data_from_rs = csockid.recv(200)
 #checks the table for the domain
-ip = dns[data_from_rs.decode('utf-8')]
-if(ip != 0):
+print(data_from_rs.decode('utf-8'))
+if(dns.has_key(data_from_rs.decode('utf-8'))):
+    ip = dns[data_from_rs.decode('utf-8')]
     ip = ip[0] + " " + ip[1]
-csockid.send(ip.encode('utf-8'))
+    csockid.send(ip.encode('utf-8'))
+    print(ip)
+
+
+
 
 server.close()

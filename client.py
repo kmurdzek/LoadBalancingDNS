@@ -9,7 +9,7 @@ def client(group_idx, idx):
     # connect to the server on local machine
     server_binding = (localhost_addr, port)
     cs.connect(server_binding)
-    msg = "amazon.com"
+    msg = "GOOGLE.com"
     cs.send(msg.encode("utf-8"))
     data = cs.recv(100)
     print("Returned data: ", data.decode('utf-8'))
