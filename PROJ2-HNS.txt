@@ -1,5 +1,8 @@
 www.princeton.edu
 rutgers.edu
+GOOGLE.com
+www.princeton.edu
 nothinghere.com
 google.com
 www.google.com
+www.princeton.edu

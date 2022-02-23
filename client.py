@@ -19,6 +19,5 @@ with open('PROJ2-HNS.txt') as textfile:
         cs.send(msg.encode("utf-8"))
         data = cs.recv(200)
         print("Returned data: ", data.decode('utf-8'))
-        print( "[C]: Group-{group_idx} Clien-{idx} received from server: {data.decode('utf-8')}")
 cs.close()        
 exit()

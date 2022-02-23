@@ -23,13 +23,13 @@ server_binding = ("", 50007)
 server.bind(server_binding)
 server.listen(10)
 
-inputs = [server,cs1, cs2] #where we read from
+inputs = [server] #where we read from
 outputs = [] #where we send to 
 error = []
 message_buffer = {} #stores the messages
 client = None
 while inputs:
-    readable, writable, e = select.select(inputs, outputs, error, 30)
+    readable, writable, e = select.select(inputs, outputs, error, 5)
     if readable or writable:
         for r in readable:
             if r is server:
@@ -42,32 +42,45 @@ while inputs:
                 #this runs when the readable is not the server but it is the socket
                 #that we added to inputs the client
                 #this gets initial message from the client
-                data = r.recv(200)
-                
+
+                if(r in inputs and r in readable):
+                    data = r.recv(200)
+                    if(not data):
+                        print("no data returned")
+                        #reconnect the socket
+                        inputs.remove(r)
+                        continue
+                else:
+                    print("r is not readable")
+                    
                 if(r is cs1 or r is cs2): #means were reading from dns and preparing to send to client
                     if(client not in outputs):
-                        outputs.append(client)
+                        outputs.append(client)   
                         message_buffer[client] = data
-                    print(data, "stalled before here1")
-                    print("DNS Socket: ", cs1, " message from dns1 to client : ", message_buffer[client])
+                    print("DNS Socket: ", cs1 ,cs2 , " message from dns to client : ", message_buffer[client])
+                    message_buffer[client] = data
+                    inputs.remove(cs1)
+                    inputs.remove(cs2)
                 if(r is client): #message we received from client and preparing for dns
                     outputs.append(cs1)
                     outputs.append(cs2)
                     message_buffer[cs1] = data
                     message_buffer[cs2] = data
                     print("Client Socket: ", client, " message from client to dns : ", message_buffer[cs1])
-                inputs.remove(r)
+                
         for w in writable:
             
             if(w is cs1):
                 print("writing to dns1 : ", w)
                 msg = message_buffer[cs1]
+                inputs.append(cs1)
                 w.send(msg.encode('utf-8'))
-            if(w is cs2):
+            elif(w is cs2):
                 print("writing to dns2 : ", w)
                 msg = message_buffer[cs2]
+                inputs.append(cs2)
                 w.send(msg.encode('utf-8'))
-            if(w is client):
+            elif(w is client):
                 print("writing to client : ", w)
                 msg = message_buffer[client]
                 if(message_buffer[client] is ''):
@@ -82,11 +95,22 @@ while inputs:
             outputs.remove(w) #we dont want to write to that socket again so we 
             #remove it from where we still have to write to
     else:
-        print("[S]: time out, server exit")
-        server.close()
-        cs1.close()
-        cs2.close()
-        inputs.remove(server)
+        print("No readable or writable/ means sockets didn't return anything")
+        print(inputs)
+        if(cs1 in inputs):
+            inputs.remove(cs1)
+        if(cs2 in inputs):
+            inputs.remove(cs2)
+        outputs.append(client)
+        message_buffer[client] = ''
+        if(len(inputs) is 1):
+            print("[S]: time out, server exit")
+            msg = "SHUT DOWN"
+            cs1.send(msg.encode('utf-8'))
+            cs2.send(msg.encode('utf-8'))
+            server.close()
+            inputs.remove(server)
+            break;
 
 
     
