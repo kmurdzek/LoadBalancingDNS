@@ -1,6 +1,7 @@
 #read in the tables
 import select
 import socket
+import sys
 from collections import defaultdict
 dns = {}
 with open("PROJ2-DNSTS2.txt", "r") as f:
@@ -11,7 +12,7 @@ print(dns)
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 print("[S]: Sever socket created")
 #server.setblocking(0)
-server_binding = ("", 50072)
+server_binding = ("", int(sys.argv[1]))
 server.bind(server_binding)
 server.setblocking(0)
 server.listen(10)
@@ -54,7 +55,7 @@ while inputs:
                 if(dns.has_key(msg)):
                     ip = dns[msg]
                     print("Hello")
-                    ip = ip[0] + " " + ip[1]
+                    ip = ip[0] + " " + ip[1] + " IN"
                     w.send(ip.encode('utf-8'))
                     
                     print("sent back to rs :", ip)

@@ -1,17 +1,20 @@
 import select
 import socket
+import sys
 from collections import defaultdict
 
 cs1 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-port1 = 50071   
-localhost_addr1 = socket.gethostbyname(socket.gethostname())
+port1 = int(sys.argv[3])   
+localhost_addr1 = socket.gethostbyname(sys.argv[2])
+print ("name of ts1address:" + localhost_addr1)
 # connect to the server on local machine
 server_binding1 = (localhost_addr1, port1)
 cs1.connect(server_binding1)
 
 cs2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-port2 = 50072   
-localhost_addr2 = socket.gethostbyname(socket.gethostname())
+port2 = int(sys.argv[5])   
+localhost_addr2 = socket.gethostbyname(sys.argv[4])
+print ("name of ts2address:" + localhost_addr2)
 # connect to the server on local machine
 server_binding2 = (localhost_addr2, port2)
 cs2.connect(server_binding2)
@@ -19,7 +22,7 @@ cs2.connect(server_binding2)
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 print("[S]: Sever socket created")
 server.setblocking(0)
-server_binding = ("", 50007)
+server_binding = ("", int(sys.argv[1]))
 server.bind(server_binding)
 server.listen(10)
 
@@ -84,7 +87,7 @@ while inputs:
                 print("writing to client : ", w)
                 msg = message_buffer[client]
                 if(message_buffer[client] is ''):
-                    msg = "DomainName - TIMED OUT"
+                    msg = " - TIMED OUT"
                 w.send(msg.encode('utf-8'))
 
             
