@@ -37,11 +37,11 @@ while inputs:
                 #that we added to inputs the client
                 #this gets initial message from the client
                 data = r.recv(200)
-                if(data is "SHUT DOWN"):
-                    print('Shutting down')
-                    server.close()
-                    inputs.remove(server)
-                    break
+                if(not data):
+                        print("no data returned")
+                        #reconnect the socket
+                        inputs.remove(r)
+                        continue
                 if(r is client): #means were reading from client and preparing to send to client
                     if(client not in outputs):
                         outputs.append(client)           

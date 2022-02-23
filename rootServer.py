@@ -105,9 +105,6 @@ while inputs:
         message_buffer[client] = ''
         if(len(inputs) is 1):
             print("[S]: time out, server exit")
-            msg = "SHUT DOWN"
-            cs1.send(msg.encode('utf-8'))
-            cs2.send(msg.encode('utf-8'))
             server.close()
             inputs.remove(server)
             break;
